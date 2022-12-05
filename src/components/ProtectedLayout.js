@@ -40,17 +40,18 @@ export const ProtectedLayout = () => {
                         <main className="content">
                             <Topbar setIsSidebar={setIsSidebar} />
                             <Routes>
-                                <Route path="/home" element={<Dashboard />} />
-                                <Route path="dashboard/team" element={<Team />} />
-                                <Route path="dashboard/contacts" element={<Contacts />} />
-                                <Route path="dashboard/invoices" element={<Invoices />} />
-                                <Route path="dashboard/form" element={<Form />} />
+
+                                <Route exact path="/home" element={<Dashboard />} />
+                                <Route exact path="dashboard/team" element={<Team />} />
+                                <Route exact path="dashboard/contacts" element={<Contacts />} />
+                                <Route exact path="dashboard/invoices" element={<Invoices />} />
+                                <Route exact path="dashboard/form" element={<Form />} />
                                 {/* <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} /> */}
-                                <Route path="dashboard/faq" element={<FAQ />} />
-                                <Route path="dashboard/calendar" element={<Calendar />} />
-                                {/* <Route path="/geography" element={<Geography />} /> */}
+                                {/* <Route exact path="dashboard/faq" element={<FAQ />} /> */}
+                                <Route exact path="dashboard/calendar" element={<Calendar />} />
+                                <Route path="*" element={<FAQ />} />
                             </Routes>
                         </main>
                     </div>
