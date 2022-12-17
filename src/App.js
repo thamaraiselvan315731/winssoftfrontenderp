@@ -10,7 +10,8 @@ import { HomeLayout } from "./components/HomeLayout";
 import { ProtectedLayout } from "./components/ProtectedLayout"
 import "./styles.css";
 import { AuthLayout } from "./components/AuthLayout";
-import { RegisterPage } from "./pages/register/register"
+import { RegisterPage } from "./pages/register/register";
+import { ForgetPassword } from "./pages/forgetpassword/ForgetPassword"
 const getUserData = () =>
   new Promise((resolve) =>
     setTimeout(() => {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter(
       <Route element={<HomeLayout />}>
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgetpassword" element={<ForgetPassword />} />
       </Route>
       <Route path="/*" element={<ProtectedLayout />}>
 

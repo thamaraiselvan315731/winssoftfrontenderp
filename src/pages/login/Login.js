@@ -60,6 +60,14 @@ export const LoginPage = () => {
                         id="password"
                         autoComplete="current-password"
                     />
+                    <Grid item>
+                        <RouterLink to="/forgetpassword">
+                            <Link href="#" variant="body2">
+                                {"Forget Password?"}
+                            </Link>
+                        </RouterLink>
+                    </Grid>
+
                     <Button
                         type="submit"
                         fullWidth
