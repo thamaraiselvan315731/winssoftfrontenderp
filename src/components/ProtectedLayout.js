@@ -11,10 +11,7 @@ import Team from "../pages/team";
 import Invoices from "../pages/invoices";
 import Contacts from "../pages/contacts";
 import Form from "../pages/form";
-// import Bar from "./pages/bar";
-// import Line from "./pages/line";
-// import Pie from "./pages/pie";
-// import Geography from "./pages/geography";
+
 import Dashboard from "../pages/dashboard";
 import FAQ from "../pages/faq";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -46,10 +43,7 @@ export const ProtectedLayout = () => {
                                 <Route exact path="dashboard/contacts" element={<Contacts />} />
                                 <Route exact path="dashboard/invoices" element={<Invoices />} />
                                 <Route exact path="dashboard/form" element={<Form />} />
-                                {/* <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} /> */}
-                                {/* <Route exact path="dashboard/faq" element={<FAQ />} /> */}
+
                                 <Route exact path="dashboard/calendar" element={<Calendar />} />
                                 <Route path="*" element={<FAQ />} />
                             </Routes>

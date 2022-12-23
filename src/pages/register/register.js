@@ -19,6 +19,10 @@ export const RegisterPage = () => {
         console.log(values);
     };
 
+    const navigateToLogin = () => {
+        window.location.replace('/')
+    }
+
     // eslint-disable-next-line
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -112,9 +116,12 @@ export const RegisterPage = () => {
 
 
                             </Box>
-                            <Box display="flex" justifyContent="center" mt="20px">
+                            <Box display="flex" justifyContent="space-between" mt="20px">
                                 <Button type="submit" color="primary" variant="contained">
                                     Register
+                                </Button>
+                                <Button color="primary" variant="contained" onClick={() => navigateToLogin()}>
+                                    Try Login
                                 </Button>
                             </Box>
                         </form>
@@ -129,7 +136,11 @@ const phoneRegExp =
     /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const checkoutSchema = yup.object().shape({
-    password: yup.string().required("required"),
+    password: yup.string().required('Please Enter your password')
+        .matches(// eslint-disable-next-line
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+            "Must be 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character"
+        ),
     companyname: yup.string().required("required"),
     email: yup.string().email("invalid email").required("required"),
 

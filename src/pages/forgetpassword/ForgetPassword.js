@@ -1,22 +1,28 @@
-import * as React from "react";
+import * as React from "react";// eslint-disable-next-line
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Header from "../../components/Header";
-
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import { Formik } from "formik";
+import * as yup from "yup";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Box from "@mui/material/Box";// eslint-disable-next-line
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";// eslint-disable-next-line
+import Typography from "@mui/material/Typography";// eslint-disable-next-line
+import Container from "@mui/material/Container";// eslint-disable-next-line
 import { Link as RouterLink } from "react-router-dom";
 import OtpInput from "./OtpInput";
 
 export const ForgetPassword = () => {
 
-    const [otp, setOTP] = React.useState(true);
-
+    const [otp, setOTP] = React.useState(false);
+    const isNonMobile = useMediaQuery("(min-width:600px)");
+    const handleFormSubmit = (values) => {
+        console.log(values);
+        setOTP(true)
+    };
     const handleSubmit = (event) => {
-        event.preventDefault();
+        event.preventDefault();// eslint-disable-next-line
         const data = new FormData(event.currentTarget);
 
     };
@@ -34,29 +40,58 @@ export const ForgetPassword = () => {
 
 
 
-                {!otp && <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                {!otp && <Box noValidate sx={{ mt: 1 }}>
                     <Header title="Forget Password" subtitle="Please enter the registered email." />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                    />
-
-
-
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValues}
+                        validationSchema={checkoutSchema}
                     >
-                        Reset
-                    </Button>
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                        }) => (<>
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    sx={{
+                                        "& > div": { gridColumn: isNonMobile ? "span 18" : "span 12" },
+                                    }}
+                                >
+                                    <TextField
+                                        fullWidth
+                                        variant="outlined"
+                                        type="text"
+                                        label="Email"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.email}
+                                        name="email"
+                                        error={!!touched.email && !!errors.email}
+                                        helperText={touched.email && errors.email}
+                                        sx={{ gridColumn: "span 8" }}
+                                    />
+
+                                </Box>
+                                <Box display="flex" justifyContent="space-between" mt="20px">
+                                    <Button type="submit" color="primary" variant="contained">
+                                        Reset
+                                    </Button>
+
+                                </Box>
+
+                            </form>
+
+
+                        </>
+                        )}
+                    </Formik>
 
                 </Box>}
                 {otp && <Box component="form" onSubmit={handleSubmit} >
@@ -66,3 +101,12 @@ export const ForgetPassword = () => {
             </Box>
         </Container></>)
 }
+
+const checkoutSchema = yup.object().shape({
+    email: yup.string().email("invalid email").required("Email Is Mandatory"),
+
+});
+const initialValues = {
+    email: ""
+
+};

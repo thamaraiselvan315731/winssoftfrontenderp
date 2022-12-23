@@ -1,5 +1,5 @@
-import React, { Component, ReactDOM } from 'react';
-import TextField from "@mui/material/TextField";
+import React from 'react';// eslint-disable-next-line
+import TextField from "@mui/material/TextField";// eslint-disable-next-line
 import Typography from "@mui/material/Typography";
 import Header from "../../components/Header";
 
@@ -22,9 +22,9 @@ class OtpInput extends React.Component {
         //const typechangetonumber2 = Number(singlechar2)
         this.setState({ [value1]: singlechar2 });
 
-    }
+    }// eslint-disable-next-line
     handleSubmit = (event) => {
-        event.preventDefault();
+        event.preventDefault();// eslint-disable-next-line
         const data = new FormData(event.currentTarget);
 
     };
@@ -72,6 +72,9 @@ class OtpInput extends React.Component {
                         xs={6}
                         sx={{
                             "& > :not(style)": { m: 1, width: "25ch" }, marginTop: 2,
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center"
                         }}
                         component="form"
                         noValidate
@@ -136,9 +139,9 @@ class OtpInput extends React.Component {
 
                         <Button
                             disabled={!this.state.otp1 || !this.state.otp2 || !this.state.otp3 || !this.state.otp4}
-                            fullWidth
+
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 3, mb: 2, mr: 16 }}
                             onClick={this.handleSubmits}>
                             Submit
                         </Button>
