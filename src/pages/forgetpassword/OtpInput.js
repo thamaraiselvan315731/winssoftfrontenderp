@@ -2,18 +2,19 @@ import React from 'react';// eslint-disable-next-line
 import TextField from "@mui/material/TextField";// eslint-disable-next-line
 import Typography from "@mui/material/Typography";
 import Header from "../../components/Header";
-
+import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { ResetPassword } from "./ResetPassword"
+import { otpVerified } from "../../Service/AuthenticationServices/auth"
 class OtpInput extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = { value: '', otp1: "", otp2: "", otp3: "", otp4: "", disable: true, resetpwd: false };
+        this.state = { value: '', otp1: "", otp2: "", otp3: "", otp4: "", disable: true, resetpwd: false, error: false, errormsg: "" };
         this.handleChanges = this.handleChanges.bind(this);
         this.handleSubmits = this.handleSubmits.bind(this);
-
+        console.log("props", props.email)
     }
 
     handleChanges(value1, event) {
@@ -33,8 +34,15 @@ class OtpInput extends React.Component {
 
         if (this.state.otp1 && this.state.otp2 && this.state.otp3 && this.state.otp4) {
             let appendString = this.state.otp1 + this.state.otp2 + this.state.otp3 + this.state.otp4;
-            console.log(appendString)
-            this.setState({ resetpwd: true, value: appendString })
+            this.setState({ value: appendString })
+            var results = await otpVerified({ email: this.props.email.email, otp: Number(appendString) })
+            console.log(results)
+            if (results.status) {
+                this.setState({ resetpwd: true, error: false });
+
+            } else {
+                this.setState({ error: true, errormsg: results.response.msg });
+            }
 
         }
 
@@ -66,6 +74,7 @@ class OtpInput extends React.Component {
 
         return (
             <div>
+                {this.state.error && <Alert severity="error" onClose={() => { this.setState({ error: false }) }}>{this.state.errormsg}</Alert>}
                 {!this.state.resetpwd && <>
                     <Header title="OTP Required" subtitle="Please enter the OTP which received on mail." />
                     <Box
@@ -84,8 +93,8 @@ class OtpInput extends React.Component {
                             name="otp1"
                             id="otp1"
                             type="number"
-                            tabindex="1"
-                            maxlength="1"
+                            // tabindex="1"
+                            maxLength="1"
                             pattern="[0-9]{1}"
                             className="otpInput"
                             value={this.state.otp1}
@@ -97,35 +106,36 @@ class OtpInput extends React.Component {
                         <input
                             name="otp2"
                             type="number"
-                            tabindex="1"
+                            // tabindex="2"
                             pattern="[0-9]{1}"
                             className="otpInput"
                             value={this.state.otp2}
                             onChange={e => this.handleChanges("otp2", e)}
-                            tabIndex="2" maxlength="1" onKeyUp={e => this.inputfocus(e)}
+                            tabIndex="2" maxLength="1" onKeyUp={e => this.inputfocus(e)}
 
                         />
                         <input
                             name="otp3"
                             type="number"
-                            tabindex="1"
+                            // tabindex="3"
                             pattern="[0-9]{1}"
                             className="otpInput"
                             value={this.state.otp3}
                             onChange={e => this.handleChanges("otp3", e)}
                             max-length="1"
+                            maxLength="1"
                             tabIndex="3" onKeyUp={e => this.inputfocus(e)}
 
                         />
                         <input
                             name="otp4"
                             type="number"
-                            tabindex="1"
+                            //tabindex="4"
                             pattern="[0-9]{1}"
                             className="otpInput"
                             value={this.state.otp4}
                             onChange={e => this.handleChanges("otp4", e)}
-                            tabIndex="4" maxlength="1" onKeyUp={e => this.inputfocus(e)}
+                            tabIndex="4" maxLength="1" onKeyUp={e => this.inputfocus(e)}
                         />
 
 
@@ -148,10 +158,10 @@ class OtpInput extends React.Component {
 
                     </Box></>}
 
-                {this.state.resetpwd && <>
-                    <ResetPassword otp={this.state.value} />
+                {this.state.resetpwd &&
+                    <ResetPassword otp={this.state.value} email={this.props.email} />
 
-                </>}
+                }
 
             </div>
         );

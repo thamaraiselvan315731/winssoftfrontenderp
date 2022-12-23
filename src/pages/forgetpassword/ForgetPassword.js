@@ -5,6 +5,8 @@ import TextField from "@mui/material/TextField";
 import Header from "../../components/Header";
 import { Formik } from "formik";
 import * as yup from "yup";
+
+import Alert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";// eslint-disable-next-line
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";// eslint-disable-next-line
@@ -12,14 +14,25 @@ import Typography from "@mui/material/Typography";// eslint-disable-next-line
 import Container from "@mui/material/Container";// eslint-disable-next-line
 import { Link as RouterLink } from "react-router-dom";
 import OtpInput from "./OtpInput";
-
+import { forgetPassword } from "../../Service/AuthenticationServices/auth"
 export const ForgetPassword = () => {
-
+    const [emails, setEmails] = React.useState("");
     const [otp, setOTP] = React.useState(false);
+    const [error, setError] = React.useState(false);// eslint-disable-next-line 
+    const [errormsg, setErrorMsg] = React.useState("Something Went Wrong!");
     const isNonMobile = useMediaQuery("(min-width:600px)");
-    const handleFormSubmit = (values) => {
-        console.log(values);
-        setOTP(true)
+    const handleFormSubmit = async (values) => {
+        var result = await forgetPassword(values)
+        if (result.status) {
+            setError(false)
+            setOTP(true)
+            setEmails(values)
+        }
+        else {
+            setError(true);
+            setErrorMsg(result.response.msg)
+        }
+
     };
     const handleSubmit = (event) => {
         event.preventDefault();// eslint-disable-next-line
@@ -29,6 +42,8 @@ export const ForgetPassword = () => {
 
     return (<>
         <Container component="main" maxWidth="xs">
+            {error && <Alert severity="error" onClose={() => { setError(false) }}>{errormsg}</Alert>}
+
             <Box
                 sx={{
                     marginTop: 8,
@@ -95,7 +110,7 @@ export const ForgetPassword = () => {
 
                 </Box>}
                 {otp && <Box component="form" onSubmit={handleSubmit} >
-                    <OtpInput />
+                    <OtpInput email={emails} />
 
                 </Box>}
             </Box>

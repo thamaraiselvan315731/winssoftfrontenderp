@@ -10,7 +10,7 @@ import { router } from "./App";
 // import { BrowserRouter } from "react-router-dom";
 
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = "http://localhost:5000/";
 
 const token = localStorage.getItem('token');
 const organizationId = localStorage.getItem('organization');
@@ -31,7 +31,6 @@ if (token) {
     }
   );
   axios.interceptors.response.use(response => {
-
     return response;
   }, error => {
 

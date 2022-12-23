@@ -1,90 +1,146 @@
 import axios from "axios"
 
-export function loginService(passingPayload, self) {
-    axios
-        .post("/login", passingPayload)
+export const loginService = async (passingPayload) => {
+    let result = await axios
+        .post("auth/login", passingPayload)
         .then(async (res) => {
-            if (res.data.status == true) {
-               
-            } else {
-               //error component
+            if (res.status === 200) {
+                let successMSG = {
+                    status: true,
+                    response: res.data
+                }
+                return successMSG
             }
         })
         .catch((error) => {
             console.log("error :>> ", error);
+            let errorMSG = {
+                status: false,
+                response: error.response.data.errors[0]
+            }
+            return errorMSG
+
         });
 
-
+    return result;
 
 }
-export function registerService(passingPayload, self) {
-    axios
-        .post("/register", passingPayload)
+export const registerService = async (passingPayload) => {
+    var lowerconversion = {
+        ...passingPayload, email: passingPayload.email.toLowerCase()
+        
+    }
+  let result= await axios
+      .post("auth/signup", lowerconversion)
         .then(async (res) => {
-            if (res.data.status == true) {
-
-            } else {
-                //error component
-            }
+            if (res.status === 200) {
+                let successMSG = {
+                    status: true,
+                    response: res.data
+                }
+                return successMSG
+            } 
         })
-        .catch((error) => {
-            console.log("error :>> ", error);
+       .catch((error) => {
+           console.log("error :>> ", error);
+           let errorMSG = {
+               status: false,
+               response: error.response.data.errors[0]
+           }
+           return errorMSG
+           
         });
 
-
-
-}
-export function resetPwd(passingPayload, self) {
-    axios
-        .post("/resetpassword", passingPayload)
-        .then(async (res) => {
-            if (res.data.status == true) {
-
-            } else {
-                //error component
-            }
-        })
-        .catch((error) => {
-            console.log("error :>> ", error);
-        });
-
-
-
-}
-
-export function otpVerifiedService(passingPayload, self) {
-    axios
-        .post("/otpverified", passingPayload)
-        .then(async (res) => {
-            if (res.data.status == true) {
-
-            } else {
-                //error component
-            }
-        })
-        .catch((error) => {
-            console.log("error :>> ", error);
-        });
-
-
+    return result;
 
 }
 
-export function changePwd(passingPayload, self) {
-    axios
-        .post("/changepassword", passingPayload)
-        .then(async (res) => {
-            if (res.data.status == true) {
+export const forgetPassword = async (passingPayload) => {
+    var lowerconversion = {
+        email: passingPayload.email.toLowerCase()
 
-            } else {
-                //error component
+    }
+  var resultService = await  axios
+      .post("auth/resetpassword", lowerconversion)
+        .then(async (res) => {
+            if (res.status === 200) {
+                let successMSG = {
+                    status: true,
+                    response: res.data
+                }
+                return successMSG
+            } 
+        })
+        .catch((error) => {
+            console.log("error :>> ", error);
+            let errorMSG = {
+                status: false,
+                response: error.response.data.errors[0]
+            }
+            return errorMSG
+        });
+
+    return resultService;
+
+}
+
+export const otpVerified = async (passingPayload) => {
+    var lowerconversion = {
+        ...passingPayload,
+        email: passingPayload.email.toLowerCase()
+
+    }
+    var resultService = await axios
+        .post("auth/validateOTP", lowerconversion)
+        .then(async (res) => {
+            if (res.status === 200) {
+                let successMSG = {
+                    status: true,
+                    response: res.data
+                }
+                return successMSG
             }
         })
         .catch((error) => {
             console.log("error :>> ", error);
+            let errorMSG = {
+                status: false,
+                response: error.response.data.errors[0]
+            }
+            return errorMSG
         });
 
+    return resultService;
 
+}
+
+export const changePassword = async (passingPayload) => {
+    var lowerconversion = {
+        ...passingPayload,
+        email: passingPayload.email.toLowerCase()
+
+    }
+    var resultService = await axios
+        .post("auth/changepassword", lowerconversion)
+        .then(async (res) => {
+            if (res.status === 200) {
+                let successMSG = {
+                    status: true,
+                    response: res.data
+                }
+                return successMSG
+            }
+        })
+        .catch((error) => {
+            console.log("error :>> ", error);
+            let errorMSG = {
+                status: false,
+                response: error.response.data.errors[0]
+            }
+            return errorMSG
+        });
+
+    return resultService;
 
 }
 

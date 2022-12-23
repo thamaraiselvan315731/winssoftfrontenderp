@@ -2,6 +2,8 @@ import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
+
+import Alert from "@mui/material/Alert";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -14,12 +16,24 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAuth } from "../../hooks/useAuth";
-
+//import { loginService } from "../../Service/AuthenticationServices/auth"
 export const LoginPage = () => {
     const { login } = useAuth();
+    const [error, setError] = React.useState(false);// eslint-disable-next-line 
+    const [errormsg, setErrorMsg] = React.useState("Something Went Wrong!");
     const isNonMobile = useMediaQuery("(min-width:600px)");
-    const handleFormSubmit = (values) => {
-        console.log(values);
+    const handleFormSubmit = async (values) => {
+        setError(false);
+        var resultfromHook = await login({
+            email: values.email.toLowerCase(),
+            password: values.password
+        });
+        if (resultfromHook.status === false) {
+            setError(true);
+            setErrorMsg(resultfromHook.response.msg)
+        }
+
+        //await loginService(values, this)
     };
     // eslint-disable-next-line
     const handleSubmit = (event) => {
@@ -33,6 +47,8 @@ export const LoginPage = () => {
 
     return (
         <Container component="main" maxWidth="xs">
+            {error && <Alert severity="error" onClose={() => { setError(false) }}>{errormsg}</Alert>}
+
             <Box
                 sx={{
                     marginTop: 8,
@@ -45,7 +61,7 @@ export const LoginPage = () => {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Log In
+                    Sign In
                 </Typography>
                 {/* <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}> */}
                 <Box display="flex" justifyContent="center" mt="20px" mb="20px">

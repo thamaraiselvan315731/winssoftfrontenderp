@@ -2,7 +2,8 @@ import * as React from "react";// eslint-disable-next-line
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-
+import { useNavigate } from 'react-router-dom';
+import Alert from "@mui/material/Alert";// eslint-disable-next-line
 import TextField from "@mui/material/TextField";// eslint-disable-next-line
 import FormHelperText from '@mui/material/FormHelperText';// eslint-disable-next-line
 import IconButton from '@mui/material/IconButton';// eslint-disable-next-line
@@ -16,49 +17,68 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";// eslint-disabl
 import Typography from "@mui/material/Typography";// eslint-disable-next-line
 import Container from "@mui/material/Container";
 import Header from "../../components/Header";
-import { Formik } from "formik";
-import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";// eslint-disable-next-line
+import { changePassword } from "../../Service/AuthenticationServices/auth"
+// eslint-disable-next-line
 let intervalid;
-export const ResetPassword = () => {
+export const ResetPassword = (props) => {
+
     const [values, setValues] = React.useState({
         atleast: false,
         password: '',
         error: false,
         showPassword: false,
     });
-    const isNonMobile = useMediaQuery("(min-width:600px)");
+    const navigate = useNavigate();
+    const [errorRules, setErrorRules] = React.useState(false);
+    const [error, setError] = React.useState(false);// eslint-disable-next-line 
+    const [success, setSuccess] = React.useState(false);// eslint-disable-next-line 
+    const [errormsg, setErrorMsg] = React.useState("Something Went Wrong!");
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
 
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        var valid = re.test(values.password);
+        if (valid) {
+            setValues({
+                ...values,
+                error: false,
+            });
+            setErrorRules(false)
+            var result = await changePassword({ email: props.email.email, password: values.password })
+
+            if (!result.status) {
+                setError(true);
+                setErrorMsg(result.response.msg)
+            }
+            else {
+                setSuccess(true);
+                setValues({
+                    ...values,
+                    password: "",
+                });
+                setTimeout(() => {
+                    navigate('/')
+                }, 4000)
+            }
+
+        }
+        else {
+            setValues({
+                ...values,
+                atleast: true,
+                error: true,
+            });
+            setErrorRules(true)
+
+        }
+        // login({
+        //     email: data.get("email"),
+        //     password: data.get("password")
+        // });
     };
-
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     console.log(values)
-    //     var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-    //     var valid = re.test(values.password);
-    //     if (valid) {
-    //         setValues({
-    //             ...values,
-    //             error: false,
-    //         });
-    //         console.log("valid")
-    //     }
-    //     else {
-    //         setValues({
-    //             ...values,
-    //             atleast: true,
-    //             error: true,
-    //         });
-    //         console.log("invalid")
-    //     }
-    //     // login({
-    //     //     email: data.get("email"),
-    //     //     password: data.get("password")
-    //     // });
-    // };
     // eslint-disable-next-line
     const handleClickShowPassword = () => {
         setValues({
@@ -71,27 +91,38 @@ export const ResetPassword = () => {
         event.preventDefault();
     };
     // eslint-disable-next-line
-    const handleChange = (prop) => (event) => {
+
+    const checkValid = async (valuesCheck) => {
+        var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        var valid = re.test(valuesCheck);
+
+        if (!valid && values.atleast) {
+            setErrorRules(true);
+        }
+        else {
+            setErrorRules(false);
+        }
+
+
+    }
+
+    const handleChange = (prop) => async (event) => {
 
         setValues({ ...values, [prop]: event.target.value });
 
-        var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        var valid = re.test(values.password);
-        if (valid && values.atleast) {
-            setValues({
-                ...values,
-                error: false,
-            });
+        if (values.atleast) {
+            await checkValid(event.target.value)
         }
 
-        console.log(values)
     };
 
     return (
         <Container component="main" maxWidth="xs">
             <Header title="Reset Password" subtitle="" />
 
+            {error && <Alert severity="error" onClose={() => { setError(false) }}>{errormsg}</Alert>}
 
+            {success && <Alert onClose={() => { setSuccess(false) }}>Updated Successfully!</Alert>}
 
             <Box sx={{
 
@@ -99,7 +130,7 @@ export const ResetPassword = () => {
                 flexDirection: "column",
                 alignItems: "center"
             }}>
-                <Formik
+                {/* <Formik
                     onSubmit={handleFormSubmit}
                     initialValues={initialValues}
                     validationSchema={checkoutSchema}
@@ -149,13 +180,13 @@ export const ResetPassword = () => {
 
                     </>
                     )}
-                </Formik>
+                </Formik> */}
 
-                {/* <FormControl sx={{ m: 1, width: '40ch' }} variant="outlined">
+                <FormControl sx={{ m: 1, width: '40ch' }} variant="outlined">
                     <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                     <OutlinedInput
                         id="outlined-adornment-password"
-                        error={values.error === true}
+                        error={errorRules === true}
                         type={values.showPassword ? 'text' : 'password'}
                         value={values.password}
                         onChange={handleChange('password')}
@@ -173,7 +204,7 @@ export const ResetPassword = () => {
                         }
                         label="Password"
                     />
-                    {values.error === true && (
+                    {errorRules === true && (
                         <FormHelperText error id="accountId-error">
                             {"This password must contains 8 character, one uppercase letter, one lowercase letter, one number and one special character"}
                         </FormHelperText>
@@ -190,22 +221,10 @@ export const ResetPassword = () => {
                     sx={{ mt: 3, mb: 2 }}
                 >
                     Reset Password
-                </Button> */}
+                </Button>
 
             </Box>
 
         </Container>
     );
-};
-const checkoutSchema = yup.object().shape({
-    password: yup.string().required('Please Enter your password')
-        .matches(// eslint-disable-next-line
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            "Must be 8 Characters, 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character"
-        ),
-
-});
-const initialValues = {
-    password: ""
-
 };

@@ -4,23 +4,44 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from "../../hooks/useAuth";
+import { registerService } from "../../Service/AuthenticationServices/auth"
 export const RegisterPage = () => {
     const { login } = useAuth();
+    const navigate = useNavigate();
     const isNonMobile = useMediaQuery("(min-width:600px)");
+    const [success, setSuccess] = React.useState(false);
+    const [error, setError] = React.useState(false);// eslint-disable-next-line 
+    const [errormsg, setErrorMsg] = React.useState("Something Went Wrong!");
+    const handleFormSubmit = async (values) => {
+        setSuccess(false)
+        setError(false)
+        const valueResponse = await registerService(values)
+        if (valueResponse.status) {
+            setSuccess(true);
+            setTimeout(() => {
+                navigate('/')
+            }, 3000)
 
-    const handleFormSubmit = (values) => {
-        console.log(values);
+        }
+        else {
+            setError(true)
+            setErrorMsg(valueResponse.response.msg)
+        }
+
     };
 
     const navigateToLogin = () => {
-        window.location.replace('/')
+        // window.location.replace('/')
+        navigate('/')
     }
 
     // eslint-disable-next-line
@@ -35,6 +56,9 @@ export const RegisterPage = () => {
 
     return (
         <Container >
+            {error && <Alert severity="error" onClose={() => { setError(false) }}>{errormsg}</Alert>}
+
+            {success && <Alert onClose={() => { setSuccess(false) }}>Register Successfully!</Alert>}
             <Box
                 sx={{
                     marginTop: 8,
@@ -43,6 +67,8 @@ export const RegisterPage = () => {
                     alignItems: "center"
                 }}
             >
+
+
                 <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
                     <LockOutlinedIcon />
                 </Avatar>
@@ -64,6 +90,7 @@ export const RegisterPage = () => {
                         handleBlur,
                         handleChange,
                         handleSubmit,
+
                     }) => (
                         <form onSubmit={handleSubmit}>
                             <Box
@@ -117,11 +144,11 @@ export const RegisterPage = () => {
 
                             </Box>
                             <Box display="flex" justifyContent="space-between" mt="20px">
-                                <Button type="submit" color="primary" variant="contained">
-                                    Register
+                                <Button type="submit" color="primary" variant="outlined">
+                                    Sign Up
                                 </Button>
-                                <Button color="primary" variant="contained" onClick={() => navigateToLogin()}>
-                                    Try Login
+                                <Button color="primary" variant="outlined" onClick={() => navigateToLogin()}>
+                                    SignIn
                                 </Button>
                             </Box>
                         </form>

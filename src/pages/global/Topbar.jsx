@@ -9,10 +9,15 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 // import SearchIcon from "@mui/icons-material/Search";
 
+import { useAuth } from "../../hooks/useAuth";
 const Topbar = () => {
   const theme = useTheme();
   //const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const { logout } = useAuth();
+  const logoutTrigger = async () => {
+    await logout();
+  }
 
   return (
     <Box display="flex" justifyContent="flex-end" p={2}>
@@ -43,7 +48,7 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={logoutTrigger}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

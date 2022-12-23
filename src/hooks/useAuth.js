@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./useLocalStorage";
-
+import { loginService } from "../Service/AuthenticationServices/auth"
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children, userData }) => {
@@ -9,12 +9,20 @@ export const AuthProvider = ({ children, userData }) => {
     const navigate = useNavigate();
     // eslint-disable-next-line
     const login = async (data) => {
-        setUser(data);
-        navigate("/home", { replace: true });
+        var result = await loginService(data);
+
+        if (result.status) {
+            setUser(result.response.user)
+            localStorage.setItem('token', result.response.token)
+        }
+        else {
+            return result;
+        }
     };
     // eslint-disable-next-line
-    const logout = () => {
+    const logout = async () => {
         setUser(null);
+        localStorage.clear();
         navigate("/", { replace: true });
     };
     // eslint-disable-next-line
